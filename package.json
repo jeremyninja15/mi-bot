@@ -1,0 +1,12 @@
+{
+  "name": "bot-api",
+  "version": "1.0.0",
+  "description": "Bot API para app AIDE",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
