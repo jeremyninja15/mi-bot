@@ -33,8 +33,8 @@ app.post("/bot", async (req, res) => {
   try {
 
     // 🔥 IMÁGENES
-    if (mensaje.startsWith("imagen")) {
-      const prompt = mensaje.replace("imagen", "").trim();
+    if (mensaje.toLowerCase().startsWith("imagen")) {
+      const prompt = mensaje.replace(/imagen/i, "").trim();
 
       return res.json({
         respuesta: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`
@@ -59,4 +59,11 @@ app.post("/bot", async (req, res) => {
       respuesta: "⚠ Error con la IA"
     });
   }
+});
+
+// 🔥 ESTO ES LO QUE TE FALTABA
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log("🚀 Servidor corriendo en puerto " + PORT);
 });
