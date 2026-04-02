@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require("axios");
 const fs = require('fs');
 
 const app = express();
@@ -21,78 +22,41 @@ app.get('/', (req, res) => {
 });
 
 // ================= BOT PRINCIPAL =================
-app.post('/bot', (req, res) => {
+app.post("/bot", async (req, res) => {
 
-  const mensaje = req.body.mensaje?.toLowerCase();
-  const userId = req.body.userId || "anonimo";
+  const mensaje = req.body.mensaje;
 
   if (!mensaje) {
     return res.json({ respuesta: "❌ Envía un mensaje válido" });
   }
 
-  // ===== CREAR USUARIO =====
-  if (!users[userId]) {
-    users[userId] = { xp: 0, level: 1 };
-  }
+  try {
 
-  const user = users[userId];
+    // 🔥 IMÁGENES
+    if (mensaje.startsWith("imagen")) {
+      const prompt = mensaje.replace("imagen", "").trim();
 
-  // ===== XP Y NIVELES =====
-  user.xp += 10;
+      return res.json({
+        respuesta: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`
+      });
+    }
 
-  if (user.xp >= user.level * 100) {
-    user.level++;
-  }
+    // 🤖 IA GRATIS
+    const response = await axios.get(
+      `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(mensaje)}&botname=NoAdsAI&ownername=Tu`
+    );
 
-  saveUsers();
-
-  // ================= COMANDOS =================
-
-  // SALUDO
-  if (mensaje === "hola") {
-    return res.json({
-      respuesta: `👋 Hola! Nivel ${user.level}`
-    });
-  }
-
-  // NIVEL
-  if (mensaje === "nivel") {
-    return res.json({
-      respuesta: `📊 Nivel ${user.level} | XP ${user.xp}`
-    });
-  }
-
-  // IMAGEN IA
-  if (mensaje.startsWith("imagen")) {
-    const prompt = mensaje.replace("imagen ", "");
+    const reply = response.data.message;
 
     return res.json({
-      respuesta: `🎨 ${prompt}`,
-      imagen: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`
+      respuesta: reply
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.json({
+      respuesta: "⚠ Error con la IA"
     });
   }
-
-  // RESPUESTA RANDOM
-  const respuestas = [
-    "😎 Todo chill",
-    "🤖 No entendí bien",
-    "🔥 Eso suena interesante",
-    "💭 Explícame más",
-    "👀 Estoy pensando..."
-  ];
-
-  const random = respuestas[Math.floor(Math.random() * respuestas.length)];
-
-  return res.json({
-    respuesta: random,
-    nivel: user.level
-  });
-
-});
-
-// ================= SERVIDOR =================
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`🔥 API corriendo en puerto ${PORT}`);
 });
