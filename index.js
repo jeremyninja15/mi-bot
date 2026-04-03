@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   res.send("🚀 BOT ACTIVO");
 });
 
-// ================= BOT PRINCIPAL =================
+// ================= BOT =================
 app.post("/bot", async (req, res) => {
 
   const mensaje = req.body.mensaje;
@@ -32,7 +32,6 @@ app.post("/bot", async (req, res) => {
 
   try {
 
-    // 🔥 IMÁGENES
     if (mensaje.toLowerCase().startsWith("imagen")) {
       const prompt = mensaje.replace(/imagen/i, "").trim();
 
@@ -41,15 +40,12 @@ app.post("/bot", async (req, res) => {
       });
     }
 
-    // 🤖 IA GRATIS
     const response = await axios.get(
       `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(mensaje)}&botname=NoAdsAI&ownername=Tu`
     );
 
-    const reply = response.data.message;
-
     return res.json({
-      respuesta: reply
+      respuesta: response.data.message
     });
 
   } catch (error) {
@@ -61,7 +57,7 @@ app.post("/bot", async (req, res) => {
   }
 });
 
-// 🔥 ESTO ES LO QUE TE FALTABA
+// PUERTO
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
