@@ -40,21 +40,24 @@ app.post("/bot", async (req, res) => {
       });
     }
 
-    const response = await axios.get(
-      `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(mensaje)}&botname=NoAdsAI&ownername=Tu`
-    );
+    // 🤖 IA LOCAL (SIN INTERNET)
+let reply = "";
 
-    return res.json({
-      respuesta: response.data.message
-    });
+if (mensaje.toLowerCase().includes("hola")) {
+  reply = "👋 Hola! Soy tu IA";
+}
+else if (mensaje.toLowerCase().includes("como estas")) {
+  reply = "😎 Estoy activo y funcionando";
+}
+else if (mensaje.toLowerCase().includes("hora")) {
+  reply = "⏰ " + new Date().toLocaleTimeString();
+}
+else {
+  reply = "🤖 No entendí eso, intenta otra cosa";
+}
 
-  } catch (error) {
-    console.error(error);
-
-    return res.json({
-      respuesta: "⚠ Error con la IA"
-    });
-  }
+return res.json({
+  respuesta: reply
 });
 
 // PUERTO
