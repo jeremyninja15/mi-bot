@@ -4,7 +4,7 @@
   "description": "Bot API para app AIDE",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node install axios && index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
