@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require("axios");
 const fs = require('fs');
 
 const app = express();
@@ -32,6 +31,7 @@ app.post("/bot", async (req, res) => {
 
   try {
 
+    // 🔥 IMÁGENES
     if (mensaje.toLowerCase().startsWith("imagen")) {
       const prompt = mensaje.replace(/imagen/i, "").trim();
 
@@ -40,27 +40,36 @@ app.post("/bot", async (req, res) => {
       });
     }
 
-    // 🤖 IA LOCAL (SIN INTERNET)
-let reply = "";
+    // 🤖 IA LOCAL
+    let reply = "";
 
-if (mensaje.toLowerCase().includes("hola")) {
-  reply = "👋 Hola! Soy tu IA";
-}
-else if (mensaje.toLowerCase().includes("como estas")) {
-  reply = "😎 Estoy activo y funcionando";
-}
-else if (mensaje.toLowerCase().includes("hora")) {
-  reply = "⏰ " + new Date().toLocaleTimeString();
-}
-else {
-  reply = "🤖 No entendí eso, intenta otra cosa";
-}
+    if (mensaje.toLowerCase().includes("hola")) {
+      reply = "👋 Hola! Soy tu IA";
+    }
+    else if (mensaje.toLowerCase().includes("como estas")) {
+      reply = "😎 Estoy activo y funcionando";
+    }
+    else if (mensaje.toLowerCase().includes("hora")) {
+      reply = "⏰ " + new Date().toLocaleTimeString();
+    }
+    else {
+      reply = "🤖 No entendí eso, intenta otra cosa";
+    }
 
-return res.json({
-  respuesta: reply
+    return res.json({
+      respuesta: reply
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      respuesta: "⚠ Error en el servidor"
+    });
+  }
+
 });
 
-// PUERTO
+// ================= PUERTO (FUERA DEL BOT) =================
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
