@@ -33,7 +33,7 @@ Bot de Discord para organizar entrenamientos de **VD Games / Violence District**
 - `/salir grupo:<grupo>`
 
 ## Comandos administrativos (permiso Gestionar servidor)
-- `/crear-grupo nombre:<nombre> horario:<día y hora>`
+- `/crear-grupo nombre:<nombre> horario:<día y hora> actividad:<objetivo>` (Practicar Killer, Subir niveles / EXP, Principiantes / aprender o Partida libre)
 - `/cerrar-grupo grupo:<grupo>`
 - `/abrir-grupo grupo:<grupo>`
 - `/eliminar-grupo grupo:<grupo>`
