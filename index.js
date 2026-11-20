@@ -33,7 +33,7 @@ function findGroup(value) {
   const v = String(value || '').trim().toLowerCase();
   return store.groups.find(g => g.id.toLowerCase() === v || g.name.toLowerCase() === v);
 }
-function label(g) { return '**' + g.id + ' · ' + g.name + '** — ' + g.schedule + ' — ' + g.members.length + '/' + MAX_MEMBERS + ' — ' + (g.open ? '🟢 Abierto' : '🔒 Cerrado'); }
+function label(g) { return '**' + g.id + ' · ' + g.name + '** — ' + g.schedule + ' — ' + (g.activity || 'Entrenamiento') + ' — ' + g.members.length + '/' + MAX_MEMBERS + ' — ' + (g.open ? '🟢 Abierto' : '🔒 Cerrado'); }
 function choices(query) {
   const q = String(query || '').toLowerCase();
   return store.groups.filter(g => g.name.toLowerCase().includes(q) || g.id.toLowerCase().includes(q)).slice(0, 25).map(g => ({ name: (g.id + ' · ' + g.name + ' (' + g.members.length + '/6)').slice(0, 100), value: g.id }));
@@ -45,7 +45,7 @@ const commands = [
   new SlashCommandBuilder().setName('grupos').setDescription('Muestra los grupos y sus cupos.'),
   new SlashCommandBuilder().setName('inscribirme').setDescription('Inscríbete en un grupo.').addStringOption(o => o.setName('grupo').setDescription('Grupo').setRequired(true).setAutocomplete(true)),
   new SlashCommandBuilder().setName('salir').setDescription('Sal de un grupo.').addStringOption(o => o.setName('grupo').setDescription('Grupo').setRequired(true).setAutocomplete(true)),
-  new SlashCommandBuilder().setName('crear-grupo').setDescription('Crea un grupo de hasta 6 jugadores.').setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(o => o.setName('nombre').setDescription('Nombre del grupo').setRequired(true).setMaxLength(40)).addStringOption(o => o.setName('horario').setDescription('Día y hora').setRequired(true).setMaxLength(80)),
+  new SlashCommandBuilder().setName('crear-grupo').setDescription('Crea un grupo de hasta 6 jugadores.').setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(o => o.setName('nombre').setDescription('Nombre del grupo').setRequired(true).setMaxLength(40)).addStringOption(o => o.setName('horario').setDescription('Día y hora').setRequired(true).setMaxLength(80)).addStringOption(o => o.setName('actividad').setDescription('Objetivo del entrenamiento').setRequired(true).addChoices({ name: 'Practicar Killer', value: 'Practicar Killer' }, { name: 'Subir niveles / EXP', value: 'Subir niveles / EXP' }, { name: 'Principiantes / aprender', value: 'Principiantes / aprender' }, { name: 'Partida libre', value: 'Partida libre' })),
   new SlashCommandBuilder().setName('cerrar-grupo').setDescription('Cierra las inscripciones.').setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(o => o.setName('grupo').setDescription('Grupo').setRequired(true).setAutocomplete(true)),
   new SlashCommandBuilder().setName('abrir-grupo').setDescription('Abre las inscripciones.').setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(o => o.setName('grupo').setDescription('Grupo').setRequired(true).setAutocomplete(true)),
   new SlashCommandBuilder().setName('eliminar-grupo').setDescription('Elimina un grupo.').setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild).addStringOption(o => o.setName('grupo').setDescription('Grupo').setRequired(true).setAutocomplete(true)),
@@ -100,8 +100,9 @@ client.on(Events.InteractionCreate, async i => {
     if (cmd === 'crear-grupo') {
       const name = i.options.getString('nombre', true).trim();
       const schedule = i.options.getString('horario', true).trim();
+      const activity = i.options.getString('actividad', true);
       if (store.groups.some(g => g.name.toLowerCase() === name.toLowerCase())) return i.reply({ content: 'Ya existe un grupo con ese nombre.', ephemeral: true });
-      const g = { id: 'G' + String(store.nextGroupId++).padStart(3, '0'), name, schedule, open: true, members: [], createdAt: new Date().toISOString() };
+      const g = { id: 'G' + String(store.nextGroupId++).padStart(3, '0'), name, schedule, activity, open: true, members: [], createdAt: new Date().toISOString() };
       store.groups.push(g); saveStore();
       return i.reply({ content: '✅ Grupo creado: ' + label(g), ephemeral: true });
     }
