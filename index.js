@@ -70,7 +70,7 @@ client.on(Events.InteractionCreate, async i => {
     if (!i.isChatInputCommand()) return;
     const cmd = i.commandName;
     if (cmd === 'ping') return i.reply({ content: '🏓 VD Bot activo · ' + client.ws.ping + ' ms', ephemeral: true });
-    if (cmd === 'ayuda') return i.reply({ ephemeral: true, content: '**VD BOT · COMANDOS**\n/ grupos — ver grupos\n/inscribirme — entrar a un grupo\n/salir — abandonar un grupo\n/ping — comprobar el bot\n\n**Administración (Gestionar servidor):**\n/crear-grupo, /cerrar-grupo, /abrir-grupo, /eliminar-grupo y /publicar-grupos.' });
+    if (cmd === 'ayuda') return i.reply({ ephemeral: true, content: '**VD BOT · COMANDOS**\n/grupos — ver grupos\n/inscribirme — entrar a un grupo\n/salir — abandonar un grupo\n/ping — comprobar el bot\n\n**Administración (Gestionar servidor):**\n/crear-grupo, /cerrar-grupo, /abrir-grupo, /eliminar-grupo y /publicar-grupos.' });
     if (cmd === 'grupos') {
       const body = store.groups.length ? store.groups.map(label).join('\n') : 'Todavía no hay grupos creados.';
       return i.reply({ content: '**VD GAMES · ENTRENAMIENTOS**\n\n' + body, ephemeral: true });
